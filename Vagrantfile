@@ -7,10 +7,10 @@
 # you're doing.
 
 Vagrant.configure("2") do |config|
-  #config.vm.box = "hashicorp/precise64"
 
+# Defining the Puppet Master
   config.vm.define "pup" do |pup|
-    pup.vm.box = "bento/centos-6.7"
+    pup.vm.box = "bento/centos-7.2"
     pup.vm.hostname = "puppetmaster"
       config.vm.provider "virtualbox" do |vb|
         vb.name = "pup"
@@ -18,11 +18,24 @@ Vagrant.configure("2") do |config|
         vb.cpus = 1 
       end
       pup.vm.network "private_network", ip: "55.55.55.10"
+      
+      # Provisioning the Puppet Master 
+      pup.vm.provision "shell", inline: <<-SHELL
+      sudo yum install -y lsof tree git vim ntp puppet-server httpd httpd-devel mod_ssl ruby-devel rubygems gcc gcc-c++ libcurl-devel openssl-devel
+      sudo chkconfig httpd on
+      sudo chkconfig ntpd on
+      sudo systemctl httpd on
+      sudo systemctl ntpd on
+      sudo yum update -y
+      sudo yum install kernel-devel.x86_64
+      sudo /etc/init.d/vboxadd setup   
+      SHELL
   end
 
+# Defining the Puppet Clients
   (1..3).each do |i|
     config.vm.define "test#{i}" do |test|
-      test.vm.box = "bento/centos-6.7"
+      test.vm.box = "bento/centos-7.2"
       test.vm.hostname = "test#{i}"
         config.vm.provider "virtualbox" do |vb|
           vb.name = "test#{i}"
@@ -30,6 +43,13 @@ Vagrant.configure("2") do |config|
           vb.cpus = 1
         end
       test.vm.network "private_network", ip: "55.55.55.1#{i}"
+      # Provisioning the Puppet Clients
+      test.vm.provision "shell", inline: <<-SHELL
+      sudo yum install -y lsof tree git vim ntp
+      sudo yum update -y
+      sudo yum install kernel-devel.x86_64
+      sudo /etc/init.d/vboxadd setup    
+      SHELL
     end
   end 
 
