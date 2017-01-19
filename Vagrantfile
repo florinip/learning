@@ -24,11 +24,11 @@ Vagrant.configure("2") do |config|
       sudo yum install -y lsof tree git vim ntp puppet-server httpd httpd-devel mod_ssl ruby-devel rubygems gcc gcc-c++ libcurl-devel openssl-devel
       sudo chkconfig httpd on
       sudo chkconfig ntpd on
-      sudo systemctl httpd on
-      sudo systemctl ntpd on
+      sudo service httpd on
+      sudo service ntpd on
       sudo yum update -y
       sudo yum install kernel-devel.x86_64
-      sudo /etc/init.d/vboxadd setup   
+      sudo /opt/VBoxGuestAdditions-5.1.10/init/vboxadd
       SHELL
   end
 
@@ -46,9 +46,11 @@ Vagrant.configure("2") do |config|
       # Provisioning the Puppet Clients
       test.vm.provision "shell", inline: <<-SHELL
       sudo yum install -y lsof tree git vim ntp
+      sudo chkconfig ntpd on
+      sudo service ntpd on
       sudo yum update -y
       sudo yum install kernel-devel.x86_64
-      sudo /etc/init.d/vboxadd setup    
+      sudo /opt/VBoxGuestAdditions-5.1.10/init/vboxadd
       SHELL
     end
   end 
