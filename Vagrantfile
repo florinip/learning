@@ -43,7 +43,7 @@ Vagrant.configure("2") do |config|
         vb.cpus = 1
       end
       test.vm.network "private_network", ip: "55.55.55.1#{i}"
-      
+
       # Provisioning the Puppet Clients
       test.vm.provision "shell", inline: <<-SHELL
       sudo yum install -y lsof tree git vim ntp
