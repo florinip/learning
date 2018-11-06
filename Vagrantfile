@@ -12,14 +12,14 @@ Vagrant.configure("2") do |config|
   config.vm.define "pup" do |pup|
     pup.vm.box = "bento/centos-7.2"
     pup.vm.hostname = "puppetmaster"
-      config.vm.provider "virtualbox" do |vb|
-        vb.name = "pup"
-        vb.memory = "2048"
-        vb.cpus = 1 
-      end
+    config.vm.provider "virtualbox" do |vb|
+      vb.name = "pup"
+      vb.memory = "2048"
+      vb.cpus = 1
+    end
       pup.vm.network "private_network", ip: "55.55.55.10"
-      
-      # Provisioning the Puppet Master 
+
+      # Provisioning the Puppet Master
       pup.vm.provision "shell", inline: <<-SHELL
       sudo yum install -y lsof tree git vim ntp puppet-server httpd httpd-devel mod_ssl ruby-devel rubygems gcc gcc-c++ libcurl-devel openssl-devel
       sudo chkconfig httpd on
@@ -37,12 +37,13 @@ Vagrant.configure("2") do |config|
     config.vm.define "test#{i}" do |test|
       test.vm.box = "bento/centos-7.2"
       test.vm.hostname = "test#{i}"
-        config.vm.provider "virtualbox" do |vb|
-          vb.name = "test#{i}"
-          vb.memory = "1024"
-          vb.cpus = 1
-        end
+      config.vm.provider "virtualbox" do |vb|
+        vb.name = "test#{i}"
+        vb.memory = "1024"
+        vb.cpus = 1
+      end
       test.vm.network "private_network", ip: "55.55.55.1#{i}"
+      
       # Provisioning the Puppet Clients
       test.vm.provision "shell", inline: <<-SHELL
       sudo yum install -y lsof tree git vim ntp
@@ -53,6 +54,6 @@ Vagrant.configure("2") do |config|
       sudo /opt/VBoxGuestAdditions-5.1.10/init/vboxadd
       SHELL
     end
-  end 
+  end
 
 end
